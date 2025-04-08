@@ -12,7 +12,9 @@ const { log } = require("console");
 const dotenv= require('dotenv')
 dotenv.config();
 app.use(express.json());
-app.use(cors());
+app.use(cors(
+  'https://frontend-seven-alpha-92.vercel.app/'
+));
 
 // Ensure the upload directory exists
 const uploadDir = "./upload/images";
