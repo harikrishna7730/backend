@@ -12,10 +12,22 @@ const { log } = require("console");
 const dotenv= require('dotenv')
 dotenv.config();
 app.use(express.json());
+const allowedOrigins = [
+  'https://frontend-jetn52ne3-harikrishnas-projects-58ddcbe8.vercel.app',
+  'https://frontend-seven-alpha-92.vercel.app'
+];
+
 app.use(cors({
-  origin: 'https://frontend-seven-alpha-92.vercel.app',
-  credentials: true // Optional: if you're sending cookies/auth headers
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true
 }));
+// https://backend-als1.onrender.com
 
 // Ensure the upload directory exists
 const uploadDir = "./upload/images";
