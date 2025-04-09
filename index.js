@@ -49,7 +49,7 @@ const upload = multer({ storage: Storage });
 
 
 // Serve images statically
-app.use('/images', express.static(path.join(__dirname, 'public/images')));
+app.use('/images', express.static(uploadDir));
 
 app.post("/upload", upload.single("product"), (req, res) => {
   if (!req.file) {
