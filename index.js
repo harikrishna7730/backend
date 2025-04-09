@@ -12,16 +12,18 @@ const { log } = require("console");
 const dotenv= require('dotenv')
 dotenv.config();
 app.use(cors({
-  origin: 'https://frontend-seven-alpha-92.vercel.app/', 
+  origin: 'https://frontend-seven-alpha-92.vercel.app', 
   methods: ['GET', 'POST'],
   credentials: true,
 }));
 
 // Ensure the upload directory exists
-const uploadDir = "./upload/images";
+const uploadDir = path.join(__dirname, 'upload/images');
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
+
+
 
 // Database connection with MongoDB
 mongoose.connect(process.env.MONGO_URL)
@@ -46,8 +48,7 @@ const Storage = multer.diskStorage({
 const upload = multer({ storage: Storage });
 
 // Serve images statically
-// app.use('/images', express.static(uploadDir));
-app.use('/images', express.static(path.join(__dirname, 'images')));
+app.use('/images', express.static(uploadDir));
 
 app.post("/upload", upload.single("product"), (req, res) => {
   if (!req.file) {
@@ -202,7 +203,7 @@ app.post('/login',async(req,res)=>{
           id:user.id
         }
       }
-      const token= jwt.sign(data,'secret_ecom')
+      const token= jwt.sign(data,process.env.SECRET_KEY)
       res.json({success:true,token});
     }else{
       res.json({success:false,errors:'wrong password'});
@@ -236,7 +237,7 @@ const fetchUser = async(req,res,next)=>{
    }
    else{
     try{
-      const data = jwt.verify(token,'secret_ecom');
+      const data = jwt.verify(token,process.env.SECRET_KEY);
       req.user=data.user;
       next();
     }catch(error){
