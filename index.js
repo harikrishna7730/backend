@@ -23,8 +23,6 @@ if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
 
-
-
 // Database connection with MongoDB
 mongoose.connect(process.env.MONGO_URL)
   .then(() => console.log("MongoDB Connected"))
@@ -47,8 +45,11 @@ const Storage = multer.diskStorage({
 
 const upload = multer({ storage: Storage });
 
+
+
+
 // Serve images statically
-app.use('/images', express.static(uploadDir));
+app.use('/images', express.static(path.join(__dirname, 'public/images')));
 
 app.post("/upload", upload.single("product"), (req, res) => {
   if (!req.file) {
@@ -60,6 +61,18 @@ app.post("/upload", upload.single("product"), (req, res) => {
      image_url: `https://backend-als1.onrender.com/images/${req.file.filename}`
   });
 });
+
+app.get("/test-images", (req, res) => {
+  fs.readdir(uploadDir, (err, files) => {
+    if (err) {
+      console.error("Error reading image folder:", err);
+      return res.status(500).send("Error reading image folder");
+    }
+    console.log("Images found:", files);
+    res.json(files);
+  });
+});
+
 
 //Schema for Creating products
 const Product = mongoose.model("product",{
