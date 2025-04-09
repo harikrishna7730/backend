@@ -11,23 +11,11 @@ const { type } = require("os");
 const { log } = require("console");
 const dotenv= require('dotenv')
 dotenv.config();
-app.use(express.json());
-const allowedOrigins = [
-  'https://frontend-jetn52ne3-harikrishnas-projects-58ddcbe8.vercel.app',
-  'https://frontend-seven-alpha-92.vercel.app'
-];
-
 app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true
+  origin: 'https://frontend-seven-alpha-92.vercel.app/', 
+  methods: ['GET', 'POST'],
+  credentials: true,
 }));
-// https://backend-als1.onrender.com
 
 // Ensure the upload directory exists
 const uploadDir = "./upload/images";
@@ -66,7 +54,8 @@ app.post("/upload", upload.single("product"), (req, res) => {
   }
   res.json({
     success: 1,
-    image_url: `http://localhost:${port}/images/${req.file.filename}`
+    // image_url: `http://localhost:${port}/images/${req.file.filename}`
+     image_url: `https://backend-als1.onrender.com/images/${req.file.filename}`
   });
 });
 
